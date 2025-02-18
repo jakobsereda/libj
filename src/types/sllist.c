@@ -1,35 +1,53 @@
 #include "../../libj.h"
 #include <stdlib.h>
 
-void sllist_init(j_sllist *list)
+void sllist_init(struct j_sllist *list)
 {
+    if (!list) return;
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
 }
 
-void sllist_clear(j_sllist *list)
+void sllist_clear(struct j_sllist *list)
 {
-    // unimplemented
+    if (!list || !list->head)
+        return;
+
+    struct j_slnode *curr = list->head;
+    while (curr) {
+        struct j_slnode *tmp = curr->next;
+        free(curr);
+        curr = tmp;
+    }
+
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
 }
 
-void sllist_append(j_sllist *list, void *data)
+void sllist_append(struct j_sllist *list, void *data)
 {
-    j_slnode *node = malloc(sizeof(struct slnode));
+    if (!list) return;
+
+    struct j_slnode *node = malloc(sizeof(struct j_slnode));
     node->data = data;
     node->next = NULL;
 
-    list->tail->next = node;
+    if (list->head)
+        list->tail->next = node;
+    else
+        list->head = node;
+
     list->tail = node;
     list->size++;
 }
 
-void sllist_prepend(j_sllist *list, void *data)
+void sllist_prepend(struct j_sllist *list, void *data)
 {
-    if (!list)
-        return;
+    if (!list) return;
 
-    j_slnode *node = malloc(sizeof(struct slnode));
+    struct j_slnode *node = malloc(sizeof(struct j_slnode));
     node->data = data;
     node->next = list->head;
 
@@ -37,15 +55,15 @@ void sllist_prepend(j_sllist *list, void *data)
     list->size++;
 }
 
-void sllist_insert(j_sllist *list, void *data, int idx)
+void sllist_insert(struct j_sllist *list, void *data, int idx)
 {
-    if (idx > 0)
+    if (!list || idx < 0) 
         return;
 
-    j_slnode *node = malloc(sizeof(struct slnode));
+    struct j_slnode *node = malloc(sizeof(struct j_slnode));
     node->data = data;
 
-    j_slnode *curr = list->head;
+    struct j_slnode *curr = list->head;
     while (idx > 0) {
         if (!curr->next)
             return;
@@ -56,19 +74,4 @@ void sllist_insert(j_sllist *list, void *data, int idx)
     node->next = curr->next;
     curr->next = node;
     list->size++;
-}
-
-void sllist_delete_node(j_sllist *list, void *data)
-{
-    //
-}
-
-void sllist_delete_head(j_sllist *list)
-{
-    //
-}
-
-void sllist_delete_tail(j_sllist *list)
-{
-    //
 }

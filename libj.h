@@ -5,38 +5,38 @@
 // ==================
 // src/types/sllist.c
 
-typedef struct slnode {
-    void          *data;
-    struct slnode *next;
-} j_slnode;
+struct j_slnode {
+    void            *data;
+    struct j_slnode *next;
+};
 
-typedef struct sllist {
-    j_slnode *head;
-    j_slnode *tail;
-    int       size;
-} j_sllist;
+struct j_sllist {
+    struct j_slnode *head;
+    struct j_slnode *tail;
+    int              size;
+};
 
-void sllist_init(j_sllist *list);
+void sllist_init(struct j_sllist *list);
 
-void sllist_clear(j_sllist *list);
+void sllist_clear(struct j_sllist *list);
 
-void sllist_append(j_sllist *list, void *data);
+void sllist_append(struct j_sllist *list, void *data);
 
-void sllist_prepend(j_sllist *list, void *data);
+void sllist_prepend(struct j_sllist *list, void *data);
 
-void sllist_insert(j_sllist *list, void *data, int idx);
+void sllist_insert(struct j_sllist *list, void *data, int idx);
 
-void sllist_delete_node(j_sllist *list, void *data);
+void sllist_delete_node(struct j_sllist *list, void *data);
 
-void sllist_delete_head(j_sllist *list);
+void sllist_delete_head(struct j_sllist *list);
 
-void sllist_delete_tail(j_sllist *list);
+void sllist_delete_tail(struct j_sllist *list);
 
-j_slnode *sllist_find_node(j_sllist *list, void *data);
+struct j_slnode *sllist_find_node(struct j_sllist *list, void *data);
 
-j_slnode *sllist_find_node_idx(j_sllist *list, int idx);
+struct j_slnode *sllist_find_node_idx(struct j_sllist *list, int idx);
 
-void sllist_reverse(j_sllist *list);
+void sllist_reverse(struct j_sllist *list);
 
 // Doubly Linked List
 // ==================
