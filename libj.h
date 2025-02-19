@@ -18,7 +18,7 @@ struct j_sllist {
 
 void sllist_init(struct j_sllist *list);
 
-void sllist_clear(struct j_sllist *list);
+void sllist_clear(struct j_sllist *list, void (*clear_data)(void *));
 
 void sllist_append(struct j_sllist *list, void *data);
 
@@ -42,16 +42,16 @@ void sllist_reverse(struct j_sllist *list);
 // ==================
 // src/types/dllist.c
 
-typedef struct dlnode {
-    void          *data;
-    struct dlnode *next;
-    struct dlnode *prev;
-} j_dlnode;
+struct j_dlnode {
+    void            *data;
+    struct j_dlnode *next;
+    struct j_dlnode *prev;
+};
 
-typedef struct dllist {
-    j_dlnode *head;
-    j_dlnode *tail;
-    int       size;
-} j_dllist;
+struct j_dllist {
+    struct j_dlnode *head;
+    struct j_dlnode *tail;
+    int              size;
+};
 
 #endif
