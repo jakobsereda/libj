@@ -11,9 +11,7 @@ void sllist_init(struct j_sllist *list)
 
 void sllist_clear(struct j_sllist *list, void (*clear_data)(void *))
 {
-    // if list->head == NULL, the list is
-    // empty and we don't need to clear
-    if (!list || !list->head)
+    if (!list || sllist_is_empty(list))
         return;
 
     struct j_slnode *curr = list->head;
@@ -92,4 +90,124 @@ void sllist_insert(struct j_sllist *list, void *data, int idx)
     node->next = curr->next;
     curr->next = node;
     list->size++;
+}
+
+void sllist_delete_head(struct j_sllist *list, void (*clear_data)(void *))
+{
+    if (!list || sllist_is_empty(list))
+        return;
+
+    struct j_slnode *tmp = list->head;
+    list->head = list->head->next;
+
+    if (list->size-- == 1)
+        list->tail = NULL;
+
+    if (clear_data)
+        clear_data(tmp->data);
+
+    free(tmp);
+}
+
+void sllist_delete_tail(struct j_sllist *list, void (*clear_data)(void *))
+{
+    if (!list || sllist_is_empty(list))
+        return;
+
+    if (list->size-- == 1) {
+        if (clear_data)
+            clear_data(list->head->data);
+
+        free(list->head);
+        list->head = NULL;
+        list->tail = NULL;
+        return;
+    }
+
+    struct j_slnode *curr = list->head;
+    while (curr->next != list->tail)
+        curr = curr->next;
+
+    if (clear_data)
+        clear_data(curr->next->data);
+
+    free(curr->next);
+    curr->next = NULL;
+    list->tail = curr;
+}
+
+void sllist_delete_node(struct j_sllist *list, void *data, void (*clear_data)(void *))
+{
+    //
+}
+
+void sllist_delete_node_idx(struct j_sllist *list, int idx, void (*clear_data)(void *))
+{
+    //
+}
+
+int sllist_is_empty(struct j_sllist *list)
+{
+    return list->size == 0;
+}
+
+struct j_slnode *sllist_find_node(struct j_sllist *list, void *data, int (*comp)(void *, void *))
+{
+    if (!list || !list->head)
+        return NULL;
+
+    struct j_slnode *curr = list->head;
+    while (curr) {
+        // comp should return 1 (or some non-zero value)
+        // when its inputs are the 'same', and zero when 
+        // they are 'different'
+        if (comp(curr->data, data))
+            return curr;
+        curr = curr->next;
+    }
+
+    return NULL;
+}
+
+struct j_slnode *sllist_find_node_idx(struct j_sllist *list, int idx)
+{
+    return NULL;
+}
+
+void sllist_reverse(struct j_sllist *list)
+{
+    //
+}
+
+void sllist_concat(struct j_sllist *dest, struct j_sllist *src)
+{
+    //
+}
+
+void sllist_sort(struct j_sllist *list, int (*comp)(void *, void *))
+{
+    //
+}
+
+void sllist_for_each(struct j_sllist *list, void (*proc)(void *))
+{
+    //
+}
+
+struct j_sllist *sllist_map(struct j_sllist *list, void *(*proc)(void *))
+{
+    //
+    return NULL;
+}
+
+struct j_sllist *sllist_filter(struct j_sllist *list, int (*pred)(void *))
+{
+    //
+    return NULL;
+}
+
+void *sllist_reduce(struct j_sllist *list, void *acc, void *(*proc)(void *, void *))
+{
+    //
+    return NULL;
 }

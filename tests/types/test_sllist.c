@@ -11,7 +11,7 @@ void test_sllist_init()
 
     assert(list->head == NULL);
     assert(list->tail == NULL);
-    assert(list->size == 0);
+    assert(sllist_is_empty(list));
 
     free(list);
 }
@@ -25,7 +25,7 @@ void test_sllist_clear_empty()
 
     assert(list->head == NULL);
     assert(list->tail == NULL);
-    assert(list->size == 0);
+    assert(sllist_is_empty(list));
 
     free(list);
 }
@@ -44,7 +44,7 @@ void test_sllist_clear_nonempty()
 
     assert(list->head == NULL);
     assert(list->tail == NULL);
-    assert(list->size == 0);
+    assert(sllist_is_empty(list));
 
     free(list);
 }
@@ -72,7 +72,7 @@ void test_sllist_clear_callback()
 
     assert(list->head == NULL);
     assert(list->tail == NULL);
-    assert(list->size == 0);
+    assert(sllist_is_empty(list));
     assert(callback_count == 2);
 
     // we cannot assert a and b are freed,
@@ -90,9 +90,9 @@ void test_sllist_append_empty()
     int a = 1;
     sllist_append(list, &a);
 
-    assert(list->size == 1);
     assert((*(int *) list->head->data) == 1);
     assert((*(int *) list->tail->data) == 1);
+    assert(list->size == 1);
 
     sllist_clear(list, NULL);
     free(list);
@@ -108,9 +108,9 @@ void test_sllist_append_multiple()
     sllist_append(list, &a);
     sllist_append(list, &b);
 
-    assert(list->size == 2);
     assert((*(int *) list->head->data) == 1);
     assert((*(char *) list->tail->data) == 'j');
+    assert(list->size == 2);
 
     sllist_clear(list, NULL);
     free(list);
@@ -124,9 +124,9 @@ void test_sllist_prepend_empty()
     int a = 1;
     sllist_append(list, &a);
 
-    assert(list->size == 1);
     assert((*(int *) list->head->data) == 1);
     assert((*(int *) list->tail->data) == 1);
+    assert(list->size == 1);
 
     sllist_clear(list, NULL);
     free(list);
@@ -142,9 +142,9 @@ void test_sllist_prepend_multiple()
     sllist_prepend(list, &a);
     sllist_prepend(list, &b);
 
-    assert(list->size == 2);
     assert((*(char *) list->head->data) == 'j');
     assert((*(int *) list->tail->data) == 1);
+    assert(list->size == 2);
 
     sllist_clear(list, NULL);
     free(list);
@@ -155,20 +155,76 @@ void test_sllist_insert_empty()
     struct j_sllist *list = malloc(sizeof(struct j_sllist));
     sllist_init(list);
 
+    int a = 1;
+    sllist_insert(list, &a, 0);
+
+    assert((*(int *) list->head->data) == 1);
+    assert((*(int *) list->tail->data) == 1);
+    assert(list->size == 1);
+
+    sllist_clear(list, NULL);
     free(list);
 }
 
 void test_sllist_insert_negidx()
 {
-    //
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 1;
+    sllist_insert(list, &a, -1);
+
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+    assert(sllist_is_empty(list));
+
+    sllist_clear(list, NULL);
+    free(list);
 }
 
 void test_sllist_insert_badidx()
 {
-    //
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 1;
+    sllist_insert(list, &a, 1);
+
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+    assert(sllist_is_empty(list));
+
+    sllist_append(list, &a);
+
+    int b = 2;
+    sllist_insert(list, &b, 2);
+
+    assert((*(int *) list->head->data) == 1);
+    assert((*(int *) list->tail->data) == 1);
+    assert(list->size == 1);
+
+    sllist_clear(list, NULL);
+    free(list);
 }
 
 void test_sllist_insert_multiple()
 {
-    //
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 1;
+    char b = 'j';
+    long c = 42;
+    sllist_append(list, &a);
+    sllist_append(list, &b);
+
+    sllist_insert(list, &c, 1);
+
+    assert((*(int *) list->head->data) == 1);
+    assert((*(long *) list->head->next->data) == 42);
+    assert((*(char *) list->tail->data) == 'j');
+    assert(list->size == 3);
+
+    sllist_clear(list, NULL);
+    free(list);
 }
