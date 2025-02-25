@@ -49,10 +49,11 @@ void test_sllist_clear_nonempty()
     free(list);
 }
 
-static int callback_count = 0;
+static int clear_callback_count = 0;
 
-void clear_data(void *data) {
-    callback_count++;
+void clear_clear_data(void *data)
+{
+    clear_callback_count++;
     free(data);
 }
 
@@ -68,12 +69,12 @@ void test_sllist_clear_callback()
     sllist_append(list, a);
     sllist_append(list, b);
 
-    sllist_clear(list, clear_data);
+    sllist_clear(list, clear_clear_data);
 
     assert(list->head == NULL);
     assert(list->tail == NULL);
     assert(sllist_is_empty(list));
-    assert(callback_count == 2);
+    assert(clear_callback_count == 2);
 
     // we cannot assert a and b are freed,
     // but its worthwhile to check for memory
@@ -224,6 +225,99 @@ void test_sllist_insert_multiple()
     assert((*(long *) list->head->next->data) == 42);
     assert((*(char *) list->tail->data) == 'j');
     assert(list->size == 3);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+int sort_comp(void *a, void *b)
+{
+    if (!a || !b) return 0;
+    return (*(int *) a) < (*(int *) b);
+}
+
+void test_sllist_sort_empty()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    sllist_sort(list, sort_comp);
+
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+    assert(list->size == 0);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+void test_sllist_sort_sorted()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 1;
+    int b = 2;
+    int c = 4;
+    sllist_append(list, &a);
+    sllist_append(list, &b);
+    sllist_append(list, &c);
+
+    sllist_sort(list, sort_comp);
+
+    assert((*(int *) list->head->data) == 1);
+    assert((*(int *) list->head->next->data) == 2);
+    assert((*(int *) list->tail->data) == 4);
+    assert(list->size == 3);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+void test_sllist_sort_odd_length()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 8;
+    int b = 2;
+    int c = 4;
+    sllist_append(list, &a);
+    sllist_append(list, &b);
+    sllist_append(list, &c);
+
+    sllist_sort(list, sort_comp);
+
+    assert((*(int *) list->head->data) == 2);
+    assert((*(int *) list->head->next->data) == 4);
+    assert((*(int *) list->tail->data) == 8);
+    assert(list->size == 3);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+void test_sllist_sort_even_length()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 8;
+    int b = 2;
+    int c = 13;
+    int d = 4;
+    sllist_append(list, &a);
+    sllist_append(list, &b);
+    sllist_append(list, &c);
+    sllist_append(list, &d);
+
+    sllist_sort(list, sort_comp);
+
+    assert((*(int *) list->head->data) == 2);
+    assert((*(int *) list->head->next->data) == 4);
+    assert((*(int *) list->head->next->next->data) == 8);
+    assert((*(int *) list->tail->data) == 13);
+    assert(list->size == 4);
 
     sllist_clear(list, NULL);
     free(list);

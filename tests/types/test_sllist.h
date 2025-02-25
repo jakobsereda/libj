@@ -18,4 +18,9 @@ void test_sllist_insert_negidx();
 void test_sllist_insert_badidx();
 void test_sllist_insert_multiple();
 
+void test_sllist_sort_empty();
+void test_sllist_sort_sorted();
+void test_sllist_sort_odd_length();
+void test_sllist_sort_even_length();
+
 #endif

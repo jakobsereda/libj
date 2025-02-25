@@ -30,7 +30,7 @@ void sllist_delete_head(struct j_sllist *list, void (*clear_data)(void *));
 
 void sllist_delete_tail(struct j_sllist *list, void (*clear_data)(void *));
 
-void sllist_delete_node(struct j_sllist *list, void *data, void (*clear_data)(void *));
+void sllist_delete_node(struct j_sllist *list, void *data, int (*comp)(void *, void *), void (*clear_data)(void *));
 
 void sllist_delete_node_idx(struct j_sllist *list, int idx, void (*clear_data)(void *));
 

@@ -3,6 +3,9 @@
 
 int main()
 {
+
+    printf("\n====<  RUNNING TESTS  >====\n");
+
     test_sllist_init();
     test_sllist_clear_empty();
     test_sllist_clear_nonempty();
@@ -13,8 +16,12 @@ int main()
     test_sllist_insert_negidx();
     test_sllist_insert_badidx();
     test_sllist_insert_multiple();
+    test_sllist_sort_empty();
+    test_sllist_sort_sorted();
+    test_sllist_sort_odd_length();
+    test_sllist_sort_even_length();
 
-    printf("ALL TESTS PASSED!\n");
+    printf("====< ALL TESTS PASSED! >====\n");
 
     return 0;
 }
