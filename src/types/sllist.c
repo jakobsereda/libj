@@ -217,7 +217,7 @@ int sllist_is_empty(struct j_sllist *list)
 
 struct j_slnode *sllist_find_node(struct j_sllist *list, void *data, int (*comp)(void *, void *))
 {
-    if (!list || sllist_is_empty(list))
+    if (!list || sllist_is_empty(list) || !comp)
         return NULL;
 
     struct j_slnode *curr = list->head;
@@ -276,69 +276,6 @@ void sllist_concat(struct j_sllist *dest, struct j_sllist *src)
     src->head = NULL;
     src->tail = NULL;
     src->size = 0;
-}
-
-struct j_slnode *sllist_merge(struct j_slnode *l, struct j_slnode *r, int (*comp)(void *, void *))
-{
-    // credit: https://stackoverflow.com/a/11273262/
-
-    struct j_slnode out;
-    struct j_slnode *p = &out;
-    out.next = NULL;
-
-    while (l && r) {
-        if (comp(l->data, r->data)) {
-            p->next = l;
-            l = l->next;
-        } else {
-            p->next = r;
-            r = r->next;
-        }
-
-        p = p->next;
-    }
-
-    if (l)
-        p->next = l;
-    else
-        p->next = r;
-
-    return out.next;
-}
-
-void sllist_sort(struct j_sllist *list, int (*comp)(void *, void *))
-{
-    if (!list || sllist_is_empty(list) || !comp)
-        return;
-
-    int mid = list->size / 2;
-    struct j_slnode *curr = list->head;
-    for (int i = 1; i < mid; i++)
-        curr = curr->next;
-
-    struct j_sllist split;
-    sllist_init(&split);
-
-    split.head = curr->next;
-    split.tail = list->tail;
-    split.size = list->size - mid;
-
-    list->tail = curr;
-    list->size = mid;
-
-    curr->next = NULL;
-
-    sllist_sort(list, comp);
-    sllist_sort(&split, comp);
-
-    list->head = sllist_merge(list->head, split.head, comp);
-
-    curr = list->head;
-    while (curr->next)
-        curr = curr->next;
-    list->tail = curr;
-
-    list->size += split.size;
 }
 
 void sllist_for_each(struct j_sllist *list, void (*proc)(void *))

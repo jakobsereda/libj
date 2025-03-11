@@ -44,8 +44,6 @@ void sllist_reverse(struct j_sllist *list);
 
 void sllist_concat(struct j_sllist *dest, struct j_sllist *src);
 
-void sllist_sort(struct j_sllist *list, int (*comp)(void *, void *));
-
 void sllist_for_each(struct j_sllist *list, void (*proc)(void *));
 
 struct j_sllist *sllist_map(struct j_sllist *list, void *(*proc)(void *));
@@ -68,6 +66,23 @@ struct j_dllist {
     struct j_dlnode *head;
     struct j_dlnode *tail;
     int              size;
+};
+
+// Queue
+// ==================
+// src/types/queue.c
+
+struct j_queue {
+    struct j_dllist *list;
+    int              size;
+};
+
+// Deque
+// ==================
+// src/types/deque.c
+
+struct j_deque {
+
 };
 
 #endif

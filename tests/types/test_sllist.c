@@ -230,18 +230,12 @@ void test_sllist_insert_multiple()
     free(list);
 }
 
-int sort_comp(void *a, void *b)
-{
-    if (!a || !b) return 0;
-    return (*(int *) a) < (*(int *) b);
-}
-
-void test_sllist_sort_empty()
+void test_sllist_delete_head_empty()
 {
     struct j_sllist *list = malloc(sizeof(struct j_sllist));
     sllist_init(list);
 
-    sllist_sort(list, sort_comp);
+    sllist_delete_head(list, NULL);
 
     assert(list->head == NULL);
     assert(list->tail == NULL);
@@ -251,74 +245,255 @@ void test_sllist_sort_empty()
     free(list);
 }
 
-void test_sllist_sort_sorted()
+void test_sllist_delete_head_single()
 {
     struct j_sllist *list = malloc(sizeof(struct j_sllist));
     sllist_init(list);
 
     int a = 1;
-    int b = 2;
-    int c = 4;
     sllist_append(list, &a);
-    sllist_append(list, &b);
-    sllist_append(list, &c);
 
-    sllist_sort(list, sort_comp);
+    sllist_delete_head(list, NULL);
 
-    assert((*(int *) list->head->data) == 1);
-    assert((*(int *) list->head->next->data) == 2);
-    assert((*(int *) list->tail->data) == 4);
-    assert(list->size == 3);
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+    assert(list->size == 0);
 
     sllist_clear(list, NULL);
     free(list);
 }
 
-void test_sllist_sort_odd_length()
+static int delete_head_callback_count = 0;
+
+void delete_head_clear_data(void *data)
+{
+    delete_head_callback_count++;
+    free(data);
+}
+
+void test_sllist_delete_head_multiple()
 {
     struct j_sllist *list = malloc(sizeof(struct j_sllist));
     sllist_init(list);
 
-    int a = 8;
+    int *a = malloc(sizeof(int));
+    *a = 1;
     int b = 2;
-    int c = 4;
-    sllist_append(list, &a);
+    sllist_append(list, a);
     sllist_append(list, &b);
-    sllist_append(list, &c);
 
-    sllist_sort(list, sort_comp);
+    sllist_delete_head(list, delete_head_clear_data);
 
-    assert((*(int *) list->head->data) == 2);
-    assert((*(int *) list->head->next->data) == 4);
-    assert((*(int *) list->tail->data) == 8);
-    assert(list->size == 3);
+    assert(*((int *)list->head->data) == 2);
+    assert(list->size == 1);
+    assert(delete_head_callback_count == 1);
 
     sllist_clear(list, NULL);
     free(list);
 }
 
-void test_sllist_sort_even_length()
+void test_sllist_delete_tail_empty()
 {
     struct j_sllist *list = malloc(sizeof(struct j_sllist));
     sllist_init(list);
 
-    int a = 8;
-    int b = 2;
-    int c = 13;
-    int d = 4;
-    sllist_append(list, &a);
-    sllist_append(list, &b);
-    sllist_append(list, &c);
-    sllist_append(list, &d);
+    sllist_delete_tail(list, NULL);
 
-    sllist_sort(list, sort_comp);
-
-    assert((*(int *) list->head->data) == 2);
-    assert((*(int *) list->head->next->data) == 4);
-    assert((*(int *) list->head->next->next->data) == 8);
-    assert((*(int *) list->tail->data) == 13);
-    assert(list->size == 4);
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+    assert(list->size == 0);
 
     sllist_clear(list, NULL);
     free(list);
+}
+
+void test_sllist_delete_tail_single()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 1;
+    sllist_append(list, &a);
+
+    sllist_delete_tail(list, NULL);
+
+    assert(list->head == NULL);
+    assert(list->tail == NULL);
+    assert(list->size == 0);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+static int delete_tail_callback_count = 0;
+
+void delete_tail_clear_data(void *data)
+{
+    delete_tail_callback_count++;
+    free(data);
+}
+
+void test_sllist_delete_tail_multiple()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    int a = 1;
+    int *b = malloc(sizeof(int));
+    *b = 2;
+    sllist_append(list, &a);
+    sllist_append(list, b);
+
+    sllist_delete_tail(list, delete_head_clear_data);
+
+    assert(*((int *)list->head->data) == 2);
+    assert(list->size == 1);
+    assert(delete_head_callback_count == 1);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+void test_sllist_delete_node_empty()
+{
+    struct j_sllist *list = malloc(sizeof(struct j_sllist));
+    sllist_init(list);
+
+    sllist_clear(list, NULL);
+    free(list);
+}
+
+void test_sllist_delete_node_single()
+{
+
+}
+
+void test_sllist_delete_node_not_found()
+{
+
+}
+
+void test_sllist_delete_node_callback()
+{
+
+}
+
+void test_sllist_delete_node_idx_empty()
+{
+
+}
+
+void test_sllist_delete_node_idx_out_of_bounds()
+{
+
+}
+
+void test_sllist_delete_node_idx_callback()
+{
+
+}
+
+void test_sllist_is_empty_true()
+{
+
+}
+
+void test_sllist_is_empty_false()
+{
+
+}
+
+void test_sllist_find_node_empty()
+{
+
+}
+
+void test_sllist_find_node_not_found()
+{
+
+}
+
+void test_sllist_find_node_multiple()
+{
+
+}
+
+void test_sllist_find_node_idx_empty()
+{
+
+}
+
+void test_sllist_find_node_idx_out_of_bounds()
+{
+
+}
+
+void test_sllist_find_node_idx_multiple()
+{
+
+}
+
+void test_sllist_reverse_empty()
+{
+
+}
+
+void test_sllist_reverse_single()
+{
+
+}
+
+void test_sllist_reverse_multiple()
+{
+
+}
+
+void test_sllist_concat_empty()
+{
+
+}
+
+void test_sllist_concat_multiple()
+{
+
+}
+
+void test_sllist_for_each_empty()
+{
+
+}
+
+void test_sllist_for_each_multiple()
+{
+
+}
+
+void test_sllist_map_empty()
+{
+
+}
+
+void test_sllist_map_multiple()
+{
+
+}
+
+void test_sllist_filter_empty()
+{
+
+}
+
+void test_sllist_filter_multiple()
+{
+
+}
+
+void test_sllist_reduce_empty()
+{
+
+}
+
+void test_sllist_reduce_multiple()
+{
+
 }
