@@ -85,4 +85,12 @@ struct j_deque {
 
 };
 
+// Stack
+// ==================
+// src/types/stack.c
+
+struct j_stack {
+
+};
+
 #endif
